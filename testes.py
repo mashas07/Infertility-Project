@@ -1,0 +1,2 @@
+print('zhenshchina')
+print('skibidi')
