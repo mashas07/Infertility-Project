@@ -41,7 +41,7 @@ class DataLoader:
         return self._df
 
     def clean(self) -> pd.DataFrame:
-        '''Drop a column with patient ID and columns with many missing values and duplicates.'''
+        '''Drop a column with patient ID and columns with many missing values.'''
         df = self.dataframe
         self._df.drop(columns=['Patient ID'], inplace=True, errors='ignore')
 
@@ -52,10 +52,9 @@ class DataLoader:
             if df[col].isnull().any():
                 df[col].fillna(df[col].mode()[0], inplace=True)
         before = len(df)
-        self._df = df.drop_duplicates().reset_index(drop=True)
         dropped = before - len(self._df)
         if dropped:
-            print(f"Removed {dropped} duplicate rows")
+            print(f"Removed {dropped} rows")
         return self._df
 
     def split_features_target(self, target_column: str):
