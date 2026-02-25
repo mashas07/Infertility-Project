@@ -7,4 +7,7 @@ echo "outline_1.py" >> .gitignore
 echo "r.py" >> .gitignore
 echo "teste.py" >> .gitignore
 echo "working_version.py" >> .gitignore
-echo "Fertility_model" >> .gitignore
+echo "Fertility_model" >> .gitignore*.ipynb
+__pycache__/
+*.pyc
+.DS_Store
