@@ -1,10 +1,10 @@
 import os
 from src.Fertility_predictor import FertilityPredictor
-from src.Visualizations import Visualization
+#from src.Visualizations import Visualization
 
 def main():
     predictor = FertilityPredictor()
-    viz = Visualization(predictor)
+    #viz = Visualization(predictor)
 
     while True:
         print(f"\n{'=' * 60}")
