@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import torch
+from torch.utils.data import Dataset, DataLoader
 from datasets import load_dataset
 from scipy import stats
 from sklearn.ensemble import RandomForestClassifier
@@ -9,8 +11,20 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.decomposition import PCA
 from sklearn.neighbors import NearestNeighbors
 
-df = pd.read_csv('Female infertility.csv')
+class InfertilityDataset(Dataset):
+    def __init__(self, csv_file):
+        self.df = pd.read_csv(csv_file)
+        self.data = torch.tensor(df.values, dtype=torch.float32)
 
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        return self.data[index]
+
+my_dataset = InfertilityDataset('Female infertility.csv')
+dataloader = Dataloader(my_dataset, batch_size=32, shuffle=True)
+df = my_dataset.df
 
 def plot_patient_distribution(data_column, patient_value, column_name):
     """
