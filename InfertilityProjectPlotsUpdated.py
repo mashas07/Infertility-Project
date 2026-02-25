@@ -1,290 +1,116 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-import torch
-from torch.utils.data import Dataset, DataLoader
+import matplotlib.patches as mpatches
+import seaborn as sns
 from datasets import load_dataset
-from scipy import stats
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
-from sklearn.decomposition import PCA
-from sklearn.neighbors import NearestNeighbors
 
-class InfertilityDataset(Dataset):
-    def __init__(self, csv_file):
-        self.df = pd.read_csv(csv_file)
-        self.data = torch.tensor(df.values, dtype=torch.float32)
+sns.set_theme(style="whitegrid", palette="muted")
+
+class FertilityModel:
+    def __init__(self):
+        raw = load_dataset("mstz/fertility", "fertility")["train"]
+        self.loader = type('obj', (object,), {'dataframe' : pd.DataFrame(raw)})()
+        
+        df = self.loader.dataframe
+        self.original_features = df.columns.drop('has_fertility_issues').tolist()
+        
+        self.X_train = df[self.original_features].copy()
+        self.y_train = df['has_fertility_issues']
+
+        for col in self.X_train.select_dtypes(include=['object', 'string', 'bool']).columns:
+            le = LabelEncoder()
+            self.X_train[col] = le.fit_transform(self.X_train[col].astype(str))
+
+        self.model = RandomForestClassifier(random_state=42)
+        self.model.fit(self.X_train, self.y_train)
+
+    def feature_importance(self, top_n=8):
+        """Returns which features are most important."""
+        importances = self.model.feature_importances_
+        indices = np.argsort(importances)[::-1][:top_n]
+        return pd.DataFrame({
+            'feature': [self.original_features[i] for i in indices],
+            'importance': importances[indices]
+        })
+
+
+class Visualization:
+    def __init__(self, model: FertilityModel):
+        if not isinstance(model, FertilityModel):
+            raise TypeError("model must be a FertilityModel instance.")
+        self._model = model
+
+    def plot_prediction_probability(self, result: dict):
+        """Bar chart of predicted class probabilities."""
+        probs = result.get('probabilities')
+        if not probs: return
+
+        classes = list(probs.keys())
+        values = [probs[c] for c in classes]
+        colors = ['#d9534f' if c == str(result['prediction']) else '#5bc0de' for c in classes]
+
+        fig, ax = plt.subplots(figsize=(8, 3))
+        bars = ax.barh(classes, values, color=colors, edgecolor='white', height=0.5)
+
+        for bar, val in zip(bars, values):
+            ax.text(bar.get_width() + 0.5, bar.get_y() + bar.get_height() / 2,
+                    f'{val:.1f}%', va='center', fontsize=11)
+
+        ax.set_xlim(0, 115)
+        ax.set_xlabel('Probability (%)')
+        ax.set_title('Prediction Probability', fontweight='bold')
+        plt.tight_layout()
+        plt.show()
+
+    def plot_patient_vs_average(self, result: dict, top_n: int = 8):
+        """Grouped bar chart comparing patient values against averages."""
+        patient_data = result.get('patient_data')
+        df = self._model.loader.dataframe
+        features = self._model.original_features[:top_n]
+
+        dataset_means = df[features].mean()
+        patient_vals = pd.Series({f: float(patient_data[f]) for f in features})
+
+        combined_max = pd.concat([dataset_means, patient_vals]).groupby(level=0).max().replace(0, 1)
+        norm_avg = dataset_means / combined_max
+        norm_pat = patient_vals / combined_max
+
+        x = np.arange(len(features))
+        width = 0.35
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.bar(x - width / 2, norm_avg, width, label='Dataset Average', color='#5bc0de')
+        ax.bar(x + width / 2, norm_pat, width, label='Your Values', color='#d9534f')
+
+        ax.set_xticks(x)
+        ax.set_xticklabels(features, rotation=30, ha='right')
+        ax.set_title('Your Values vs Dataset Average', fontweight='bold')
+        ax.legend()
+        plt.tight_layout()
+        plt.show()
+
+    def plot_patient_report(self, result: dict):
+        """Show all patient plots."""
+        self.plot_prediction_probability(result)
+        self.plot_patient_vs_average(result)
+
+my_model = FertilityModel()
+
+viz = Visualization(my_model)
+
+patient_idx = 0
+raw_patient_row = my_model.loader.dataframe.iloc[patient_idx]
+
+patient_features_only = my_model.X_train.iloc[[patient_idx]]
+probs = my_model.model.predict_proba(patient_features_only)[0]
+
+analysis_result = {
+    'prediction': 'Issues' if probs[1] > 0.5 else 'Normal',
+    'probabilities': {'Normal': probs[0] * 100, 'Issues': probs[1] * 100},
+    'patient_data': raw_patient_row.to_dict()
+}
 
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, index):
-        return self.data[index]
-
-my_dataset = InfertilityDataset('Female infertility.csv')
-dataloader = Dataloader(my_dataset, batch_size=32, shuffle=True)
-df = my_dataset.df
-
-def plot_patient_distribution(data_column, patient_value, column_name):
-    """
-        Creates a histogram with a density curve to show the population distribution
-        of a specific feature and marks the target patient's position.
-
-        Parameters:
-        data_column (Series): The column of data from the fertility dataset (e.g., df['Age']).
-        patient_value (float): The specific value belonging to the patient being analyzed.
-        column_name (str): The name of the feature for labeling the chart.
-
-        Returns:
-        Figure: A matplotlib figure showing the patient's percentile rank in the population.
-        """
-    fig, ax = plt.subplots(figsize=(10, 6))
-
-    ax.hist(data_column, bins=20, alpha=0.5, color='mediumseagreen', edgecolor='black', density=True, label='Population')
-
-    kde = stats.gaussian_kde(data_column)
-    x_range = np.linspace(data_column.min(), data_column.max(), 100)
-    ax.plot(x_range, kde(x_range), 'b-', linewidth=2, label='Population Density')
-
-    ax.axvline(patient_value, color='red', linestyle='--', linewidth=2, label=f'Patient ({column_name}: {patient_value})')
-
-    percentile = stats.percentileofscore(data_column, patient_value)
-    ax.text(patient_value, ax.get_ylim()[1] * 0.9, f' {percentile:.1f}th percentile', ha='center', fontsize=12, color='red', weight='bold')
-    
-    ax.set_xlabel(column_name, fontsize=12)
-    ax.set_ylabel('Density', fontsize=12)
-    ax.set_title(f'Patient Position in {column_name} Distribution', fontsize=14, weight='bold')
-    ax.legend()
-    ax.grid(alpha=0.3)
-
-    return fig
-
-plt.show()
-
-
-dataset = load_dataset("mstz/fertility", "fertility")["train"]
-df = pd.DataFrame(dataset)
-
-label_encoders = {}
-for col in df.select_dtypes(include=['string', 'object', 'bool']).columns:
-    le = LabelEncoder()
-    df[col] = le.fit_transform(df[col].astype(str))
-    label_encoders[col] = le
-
-X = df.drop('has_fertility_issues', axis=1)
-y = df['has_fertility_issues']
-feature_names = X.columns.tolist()
-
-model = RandomForestClassifier(random_state=42)
-model.fit(X, y)
-
-patient_data = X.iloc[0].to_dict()
-
-
-def plot_fertility_analysis(model, feature_names, patient_data):
-    """
-        Generates a dual-pane visualization comparing global predictive factors
-        against a specific patient's health profile.
-
-        Left Plot: Shows the 'Top 10' most influential features determined by
-        the Random Forest model (e.g., which habits matter most for fertility).
-
-        Right Plot: Shows the patient's actual recorded values for those same
-        top 10 features to see which specific habits might be driving their risk score.
-
-        Args:
-            model (RandomForestClassifier): The trained machine learning model.
-            feature_names (list): Labels for all analyzed columns.
-            patient_data (dict): The raw, non-scaled feature values for the individual.
-
-        Returns:
-            matplotlib.figure.Figure: Side-by-side bar charts for medical habit comparison.
-        """
-    importances = model.feature_importances_
-    indices = np.argsort(importances)[::-1][:10]
-    top_features = [feature_names[i] for i in indices]
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-
-    ax1.barh(range(len(indices)), importances[indices], color='skyblue', edgecolor='black')
-    ax1.set_yticks(range(len(indices)))
-    ax1.set_yticklabels(top_features)
-    ax1.set_xlabel('Feature Importance', fontsize=12)
-    ax1.set_title('Top 10 Most Important Features', fontsize=14, weight='bold')
-    ax1.invert_yaxis()
-    ax1.grid(axis='x', alpha=0.3)
-
-    patient_values = [patient_data.get(f, 0) for f in top_features]
-    x_pos = np.arange(len(top_features))
-
-    ax2.barh(x_pos, patient_values, color='coral', alpha=0.7, label='Patient', edgecolor='black')
-    ax2.set_yticks(x_pos)
-    ax2.set_yticklabels(top_features)
-    ax2.set_xlabel('Feature Value (Encoded)', fontsize=12)
-    ax2.set_title("Patient's Key Feature Values", fontsize=14, weight='bold')
-    ax2.invert_yaxis()
-    ax2.legend()
-    ax2.grid(axis='x', alpha=0.3)
-
-    return fig
-
-
-fig = plot_fertility_analysis(model, feature_names, patient_data)
-plt.tight_layout()
-plt.show()
-
-
-dataset = load_dataset("mstz/fertility", "fertility")["train"]
-df = pd.DataFrame(dataset)
-
-le_dict = {}
-for col in df.select_dtypes(include=['string', 'object', 'bool']).columns:
-    le = LabelEncoder()
-    df[col] = le.fit_transform(df[col].astype(str))
-    le_dict[col] = le
-
-X = df.drop('has_fertility_issues', axis=1)
-y = df['has_fertility_issues']
-feature_names = X.columns.tolist()
-
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-model = RandomForestClassifier(random_state=42)
-model.fit(X_scaled, y)
-
-patient_index = 0
-patient_scaled = X_scaled[patient_index].reshape(1, -1)
-patient_raw = X.iloc[patient_index].to_dict()
-
-
-def plot_importance_and_values(model, feature_names, patient_data):
-    """
-        Creates a dual-pane visualization to explain the 'Why' behind a patient's risk score.
-
-        The left plot displays 'Global Importance,' showing which features the AI
-        found most influential across the whole dataset. The right plot displays
-        'Patient Specific Levels,' showing the actual values for the target patient
-        to see how they align with those high-impact factors.
-
-        Args:
-            model: The trained RandomForestClassifier.
-            feature_names (list): The list of medical/lifestyle factor names.
-            patient_data (dict): The specific data row for the patient being analyzed.
-
-        Returns:
-            matplotlib.figure.Figure: A side-by-side bar chart comparison.
-        """
-    importances = model.feature_importances_
-    indices = np.argsort(importances)[::-1][:10]
-    top_features = [feature_names[i] for i in indices]
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-
-    ax1.barh(range(len(indices)), importances[indices], color='skyblue', edgecolor='black')
-    ax1.set_yticks(range(len(indices)))
-    ax1.set_yticklabels(top_features)
-    ax1.set_title('Top 10 Most Important Fertility Factors', weight='bold')
-    ax1.invert_yaxis()
-
-    patient_values = [patient_data.get(f, 0) for f in top_features]
-    ax2.barh(range(len(top_features)), patient_values, color='coral', alpha=0.7, label='Your Patient')
-    ax2.set_yticks(range(len(top_features)))
-    ax2.set_yticklabels(top_features)
-    ax2.set_title("Patient's Specific Feature Levels", weight='bold')
-    ax2.invert_yaxis()
-    ax2.legend()
-    plt.tight_layout()
-    return fig
-
-
-def plot_similar_patients(X_train, y_train, patient_scaled):
-    """
-        Creates a 2D similarity map using PCA to visualize a patient's risk
-        profile relative to the rest of the study population.
-
-        This function squashes 10+ medical and lifestyle features into two
-        Principal Components (PC1 and PC2). By marking the 20 nearest neighbors,
-        it allows for visual 'cluster analysis'—seeing if a patient's data
-        points (the Red Star) land among healthy individuals or those with
-        fertility issues.
-
-        Args:
-            X_train (ndarray): Standardized population feature data.
-            y_train (Series): Binary fertility outcomes (1=Yes, 0=No).
-            patient_scaled (ndarray): The target patient's data, standardized
-                to the same scale as the population.
-
-        Returns:
-            matplotlib.figure.Figure: A scatter plot showing population density,
-                similarity clusters, and the target patient marker.
-        """
-
-    pca = PCA(n_components=2, random_state=42)
-    X_2d = pca.fit_transform(X_train)
-    patient_2d = pca.transform(patient_scaled)
-
-    nn = NearestNeighbors(n_neighbors=20)
-    nn.fit(X_train)
-    _, indices = nn.kneighbors(patient_scaled)
-
-    fig, ax = plt.subplots(figsize=(10, 7))
-
-    scatter = ax.scatter(X_2d[:, 0], X_2d[:, 1], c=y_train, cmap='viridis', alpha=0.4, label='Population')
-
-    ax.scatter(X_2d[indices[0], 0], X_2d[indices[0], 1], c='orange', s=100, label='20 Most Similar Patients',
-               edgecolor='black')
-
-    ax.scatter(patient_2d[0, 0], patient_2d[0, 1], c='red', marker='*', s=500, label='Target Patient', zorder=5)
-
-    cbar = plt.colorbar(scatter)
-    cbar.set_label('Fertility Issue (1=Yes, 0=No)')
-    ax.set_title('Patient Position Among Similar Cases (PCA)', weight='bold')
-    ax.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.1%} variance)')
-    ax.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.1%} variance)')
-    ax.legend()
-    return fig
-
-plot_importance_and_values(model, feature_names, patient_raw)
-plot_similar_patients(X_scaled, y, patient_scaled)
-plt.show()
-
-
-def plot_patient_vs_average(df, patient_data):
-    """
-    Compares patient values against population averages for the fertility dataset.
-    """
-
-    numerical_cols = [
-        'age_at_time_of_sampling',
-        'frequency_of_alcohol_consumption',
-        'number_of_sitting_hours_per_day'
-    ]
-
-
-    averages = df[numerical_cols].mean()
-
-    patient_vals = [patient_data.get(col, 0) for col in numerical_cols]
-
-    fig, ax = plt.subplots(figsize=(10, 5))
-    y_pos = np.arange(len(numerical_cols))
-    width = 0.35
-
-    ax.barh(y_pos - width / 2, averages, width, label='Average', color='lightgray', edgecolor='black')
-    ax.barh(y_pos + width / 2, patient_vals, width, label='Your Patient', color='teal', alpha=0.8)
-
-    clean_labels = [col.replace('_', ' ').title() for col in numerical_cols]
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(clean_labels)
-
-    ax.set_xlabel('Value')
-    ax.set_title('Patient Metrics vs. Average', weight='bold', fontsize=14)
-    ax.legend()
-    ax.invert_yaxis()
-    plt.tight_layout()
-
-    return fig
-
-plot_patient_vs_average(df, patient_raw)
-plt.show()
+viz.plot_patient_report(analysis_result)
