@@ -232,7 +232,45 @@ def plot_similar_patients(X_train, y_train, patient_scaled):
     ax.legend()
     return fig
 
-
 plot_importance_and_values(model, feature_names, patient_raw)
 plot_similar_patients(X_scaled, y, patient_scaled)
+plt.show()
+
+
+def plot_patient_vs_average(df, patient_data):
+    """
+    Compares patient values against population averages for the fertility dataset.
+    """
+
+    numerical_cols = [
+        'age_at_time_of_sampling',
+        'frequency_of_alcohol_consumption',
+        'number_of_sitting_hours_per_day'
+    ]
+
+
+    averages = df[numerical_cols].mean()
+
+    patient_vals = [patient_data.get(col, 0) for col in numerical_cols]
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    y_pos = np.arange(len(numerical_cols))
+    width = 0.35
+
+    ax.barh(y_pos - width / 2, averages, width, label='Average', color='lightgray', edgecolor='black')
+    ax.barh(y_pos + width / 2, patient_vals, width, label='Your Patient', color='teal', alpha=0.8)
+
+    clean_labels = [col.replace('_', ' ').title() for col in numerical_cols]
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(clean_labels)
+
+    ax.set_xlabel('Value')
+    ax.set_title('Patient Metrics vs. Average', weight='bold', fontsize=14)
+    ax.legend()
+    ax.invert_yaxis()
+    plt.tight_layout()
+
+    return fig
+
+plot_patient_vs_average(df, patient_raw)
 plt.show()
