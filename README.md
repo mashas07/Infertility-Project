@@ -180,7 +180,7 @@ You will see three plots:
 
 You can see an example of a "patient vs. average" plot below:
 
-<img width="500" height="600" alt="Screenshot 2026-02-26 at 18 36 10" src="https://github.com/user-attachments/assets/54c3453d-8cf6-46e6-9f94-f6f34461e8bc" />
+<img width="1600" height="999" alt="image" src="https://github.com/user-attachments/assets/2c7a39c7-b3d6-4e91-a23c-34a4970638d6" />
 
 ### **4. Select 5 to see the model summary**
 ```
