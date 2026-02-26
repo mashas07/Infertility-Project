@@ -4,13 +4,13 @@ import os
 import kagglehub
 
 class DataLoader:
-    '''Loading, validating, and cleaning the data.'''
+    '''Loading, validating, cleaning the data.'''
 
     def __init__(self):
         self._df: pd.DataFrame | None = None
 
     @property
-    def dataframe(self) -> pd.DataFrame:
+    def dataframe(self):
         if self._df is None:
             raise RuntimeError("Data not loaded yet. Call load() first.")
         return self._df
@@ -23,15 +23,12 @@ class DataLoader:
         loaded = f"loaded {self._df.shape}" if self._df is not None else "not loaded"
         return f"DataLoader(kaggle, data={loaded})"
 
-    def __str__(self):
-        if self._df is None:
-            return "DataLoader → kaggle (not loaded)"
-        return f"DataLoader → kaggle | {self._df.shape[0]} rows × {self._df.shape[1]} cols"
-
     def __len__(self):
         return len(self.dataframe)
 
-    def load(self) -> pd.DataFrame:
+
+    
+    def load(self):
         '''Load the file and strip column whitespace.'''
         path = kagglehub.dataset_download("fida5073/female-infertility")
         csv_file = [f for f in os.listdir(path) if f.endswith('.csv')][0]
@@ -40,7 +37,7 @@ class DataLoader:
         print(f"Loaded: {self._df.shape[0]} rows × {self._df.shape[1]} columns")
         return self._df
 
-    def clean(self) -> pd.DataFrame:
+    def clean(self):
         '''Drop a column with patient ID and columns with many missing values.'''
         df = self.dataframe
         self._df.drop(columns=['Patient ID'], inplace=True, errors='ignore')
@@ -61,9 +58,7 @@ class DataLoader:
         '''Return (X, y) split from the loaded dataframe.'''
         df = self.dataframe
         if target_column not in df.columns:
-            raise ValueError(
-                f"Target '{target_column}' not found. Available: {list(df.columns)}"
-            )
+            raise ValueError(f"Column '{target_column}' not found. Columns in the dataset: {list(df.columns)}")
         X = df.drop(columns=[target_column])
         y = df[target_column]
         return X, y
