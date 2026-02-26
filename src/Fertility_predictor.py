@@ -76,7 +76,7 @@ class FertilityPredictor(FertilityModel):
     def interactive_prediction(self):
         print("Patient Data")
         print(f"{"*" * 70}")
-        print("(In question after 'age' please input 1 (yes) and 0 (no)")
+        print("Please, input 1 (yes) or 0 (no) as the answer for questions (except for 'age')")
 
         patient_data = {}
         for feature in self._original_features:
