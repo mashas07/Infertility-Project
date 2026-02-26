@@ -129,7 +129,21 @@ Saved components → fertility_components.pkl
 **Macro avg** — calculates the average of precision, recall, and F1 across both classes, treating them equally regardless of how many patients are in each class
 
 **Weighted avg** — calculates the average weighted by how many patients are in each class (25 fertile, 116 infertile)
-  
+
+### **2. Select 2 to use the existing model.**
+```
+Loaded: 705 rows × 13 columns
+Loaded model ← fertility_model.pkl
+Loaded components ← fertility_components.pkl
+Features: 11
+```
+When you choose to load model, the program loads two files from your current directory:
+
+- fertility_model.pkl — the saved Random Forest model
+- fertility_components.pkl — the saved scaler, feature names, and other components
+
+Which means you can only use this option if you trained the model beforehand.
+
 ### **2. Select 3 to enter patient data and get a prediction (in question other that "age" input 1 for yes and 0 for no).**
 ```
 Processing patient data
