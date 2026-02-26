@@ -34,6 +34,7 @@ def main():
         choice = input("Choice: ").strip()
         if choice == "1":
             predictor.train()
+            predictor.save()
 
         elif choice == "2":
             try:
