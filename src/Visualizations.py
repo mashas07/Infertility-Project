@@ -45,7 +45,7 @@ class Visualization:
 
         classes = list(probs.keys())
         values = [probs[c] for c in classes]
-        colors = ['#d9534f' if c == str(result['prediction']) else '#5bc0de' for c in classes]
+        colors = ['#ffadbe' if c == str(result['prediction']) else '#5bc0de' for c in classes]
 
         fig, ax = plt.subplots(figsize=(8, max(3, len(classes) * 0.8)))
         bars = ax.barh(classes, values, color=colors, edgecolor='white', height=0.5)
@@ -58,7 +58,7 @@ class Visualization:
         ax.set_xlabel('Probability (%)', fontsize=12)
         ax.set_title('Prediction Probability by Class', fontsize=14, fontweight='bold')
 
-        predicted_patch = mpatches.Patch(color='#d9534f', label=f'Predicted: {result["prediction"]}')
+        predicted_patch = mpatches.Patch(color='#ffadbe', label=f'Predicted: {result["prediction"]}')
         other_patch = mpatches.Patch(color='#5bc0de', label='Other classes')
         ax.legend(handles=[predicted_patch, other_patch], loc='lower right')
 
@@ -99,7 +99,7 @@ class Visualization:
 
         fig, ax = plt.subplots(figsize=(10, 5))
         ax.bar(x - width / 2, norm_avg, width, label='Dataset Average', color='#5bc0de', edgecolor='white')
-        ax.bar(x + width / 2, norm_pat, width, label='Your Values', color='#d9534f', edgecolor='white')
+        ax.bar(x + width / 2, norm_pat, width, label='Your Values', color='#ffadbe', edgecolor='white')
 
         ax.set_xticks(x)
         ax.set_xticklabels(features, rotation=30, ha='right', fontsize=10)
@@ -140,7 +140,7 @@ class Visualization:
         }
 
         contrib_series = pd.Series(contributions).sort_values()
-        colors = ['#d9534f' if v > 0 else '#5cb85c' for v in contrib_series]
+        colors = ['#ffadbe' if v > 0 else '#5cb85c' for v in contrib_series]
 
         fig, ax = plt.subplots(figsize=(9, max(4, len(contrib_series) * 0.6)))
         contrib_series.plot(kind='barh', ax=ax, color=colors, edgecolor='white')
@@ -150,7 +150,7 @@ class Visualization:
                       fontsize=11)
         ax.set_title('Which Factors Influenced Your Prediction Most', fontsize=14, fontweight='bold')
 
-        increase = mpatches.Patch(color='#d9534f', label='Increases predicted risk')
+        increase = mpatches.Patch(color='#ffadbe', label='Increases predicted risk')
         decrease = mpatches.Patch(color='#5cb85c', label='Decreases predicted risk')
         ax.legend(handles=[increase, decrease])
 
