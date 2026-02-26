@@ -50,7 +50,7 @@ pip install -r requirements.txt
 ## Usage
 Run the application:
 ```
-python main.py
+python main_file.py
 ```
 You will see a menu:
 ```
