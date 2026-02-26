@@ -8,6 +8,15 @@ echo "r.py" >> .gitignore
 echo "teste.py" >> .gitignore
 echo "working_version.py" >> .gitignore
 echo "Fertility_model" >> .gitignore*.ipynb
+echo "Female Infertility Code.ipynb" >> .gitignore
+echo "Female infertility.csv" >> .gitignore
+echo "archive.zip" >> .gitignore
+echo "desktop.ini" >> .gitignore
+echo "first_python_file.py" >> .gitignore
+echo "main.py" >> .gitignore
+echo "plots.py" >> .gitignore
+.idea
+.infertilityProjectMine
 __pycache__/
 *.pyc
 .DS_Store
