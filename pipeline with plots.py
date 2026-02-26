@@ -10,8 +10,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
 
-from src.DataLoad import DataLoader 
-from src.FertilityModel import FertilityModel
 from src.Fertility_predictor import FertilityPredictor
 from src.Visualization import Visualization
 
