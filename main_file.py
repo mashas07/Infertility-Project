@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 from src.Fertility_predictor import FertilityPredictor
-from src.Visualization import Visualization
+from src.Visualizations import Visualization
 
 def main(): 
     """
