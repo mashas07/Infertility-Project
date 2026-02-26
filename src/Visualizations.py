@@ -22,19 +22,13 @@ class Visualization:
     """
 
     def __init__(self, model: FertilityModel):
-        if not isinstance(model, FertilityModel):
-            raise TypeError("model must be a FertilityModel instance.")
         self._model = model
-
-    # ── magic methods ────────────────────────────
 
     def __repr__(self):
         return f"Visualization(model={self._model!r})"
 
     def __str__(self):
         return f"Visualization → bound to {self._model.__class__.__name__}"
-
-    # ── patient plots ────────────────────────────
 
     def plot_prediction_probability(self, result: dict):
         """Bar chart of predicted class probabilities."""
