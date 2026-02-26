@@ -28,9 +28,9 @@ class FertilityPredictor(FertilityModel):
 
     @staticmethod
     def _display_result(result: dict):
-        print(f"\n{'*' * 50}")
+        print(f"\n{'*' * 70}")
         print("PREDICTION RESULTS")
-        print(f"{'*' * 50}")
+        print(f"{'*' * 70}")
         print(f"Prediction : {result['prediction']}")
         print(f"Confidence : {result['confidence']:.2f}%")
         if result['probabilities']:
@@ -38,10 +38,10 @@ class FertilityPredictor(FertilityModel):
             for cls, prob in result['probabilities'].items():
                 bar = "=" * int(prob / 2)
                 print(f"    {cls:20s} {bar} {prob:.1f}%")
-        print(f"\n{'*' * 50}")
+        print(f"\n{'*' * 70}")
         print("!!  This is a prediction, not a medical diagnosis  !!")
         print("     Please consult a qualified healthcare professional.")
-        print(f"{'*' * 50}\n")
+        print(f"{'*' * 70}\n")
 
     def predict_patient(self, patient_data: dict) -> dict:
         '''Make a prediction given patient data'''
@@ -75,7 +75,7 @@ class FertilityPredictor(FertilityModel):
 
     def interactive_prediction(self):
         print("Patient Data")
-        print(f"{"*" * 50}")
+        print(f"{"*" * 70}")
 
         patient_data = {}
         for feature in self._original_features:
