@@ -79,20 +79,20 @@ class FertilityPredictor(FertilityModel):
 
         patient_data = {}
         for feature in self._original_features:
-    while True:
-        raw = input(f"{feature}: ").strip()
-        if not raw:
-            print(f"! '{feature}' is required.")
-            continue
-        try:
-            value = float(raw)
-            if feature.lower() != 'age' and value not in (0, 1):
-                print(f"! '{feature}' must be 0 or 1.")
-                continue
-            patient_data[feature] = value
-            break
-        except ValueError:
-            print(f"! Please enter a valid number.")
+            while True:
+                raw = input(f"{feature}: ").strip()
+                if not raw:
+                    print(f"! '{feature}' is required.")
+                    continue
+                try:
+                    value = float(raw)
+                    if feature.lower() != 'age' and value not in (0, 1):
+                        print(f"! '{feature}' must be 0 or 1.")
+                        continue
+                    patient_data[feature] = value
+                    break
+                except ValueError:
+                    print(f"! Please enter a valid number.")
 
         print(f"\nProcessing patient data")
         result = self.predict_patient(patient_data)
