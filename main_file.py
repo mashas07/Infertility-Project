@@ -33,7 +33,6 @@ def main():
 
         choice = input("Choice: ").strip()
         if choice == "1":
-            print("Training model...")
             predictor.train()
 
         elif choice == "2":
@@ -43,18 +42,14 @@ def main():
                 print(f"Error loading model: {e}")
         
         elif choice == "3":
-            if not predictor.is_trained:
-                print("Train or load model first.")
-                continue
-            try:
-                predictor.interactive_prediction()
-                last_result = predictor.last_result
-            except Exception as e:
-                print(f"Error during prediction: {e}")
-                
-            result = predictor.predict_patient(patient_data)
-            last_result = result
-            print(result)
+    if not predictor.is_trained:
+        print("Train or load model first.")
+        continue
+    try:
+        predictor.interactive_prediction()
+        last_result = predictor.last_result
+    except Exception as e:
+        print(f"Error during prediction: {e}")
 
         elif choice == "4":
             if not predictor.is_trained:
