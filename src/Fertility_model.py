@@ -42,9 +42,6 @@ class FertilityModel:
     def loader(self) -> DataLoader:
         return self._loader
 
-    def __repr__(self):
-        status = f"trained, accuracy={self._accuracy:.4f}" if self._is_trained else "untrained"
-        return f"FertilityModel({status}, features={len(self._original_features)})"
 
     def __str__(self):
         if not self._is_trained:
@@ -124,7 +121,7 @@ class FertilityModel:
 
         return predicted_class, confidence, prob_dict
 
-    def feature_importance(self, top_n: int = 10) -> pd.DataFrame:
+    def feature_importance(self, top_n: int = 10):
         if not self._is_trained:
             raise RuntimeError("Model must be trained before making predictions")
 
@@ -136,7 +133,6 @@ class FertilityModel:
 
     def save(self, model_path: str = 'fertility_model.pkl',
              components_path: str = 'fertility_components.pkl'):
-        '''Persist model and components to disk.'''
         if not self._is_trained:
             raise RuntimeError("Train the model before saving.")
         with open(model_path, 'wb') as f:
@@ -155,7 +151,7 @@ class FertilityModel:
 
     def load(self, model_path: str = 'fertility_model.pkl',
              components_path: str = 'fertility_components.pkl'):
-        '''Restore model and components from disk.'''
+        '''Restore model and components from disk'''
         with open(model_path, 'rb') as f:
             self._model = pickle.load(f)
         with open(components_path, 'rb') as f:
