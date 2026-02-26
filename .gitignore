@@ -1,6 +1,11 @@
 echo "__pycache__/" > .gitignore
 echo "*.pkl" >> .gitignore
 echo "*.pyc" >> .gitignore
+echo ".idea/" >> .gitignore
+echo "infertilityProjectMine/" >> .gitignore
+echo "*.zip" >> .gitignore
+echo "desktop.ini" >> .gitignore
+echo "*.csv" >> .gitignore
 echo "1.py" >> .gitignore
 echo "outline.py" >> .gitignore
 echo "outline_1.py" >> .gitignore
@@ -15,8 +20,8 @@ echo "desktop.ini" >> .gitignore
 echo "first_python_file.py" >> .gitignore
 echo "main.py" >> .gitignore
 echo "plots.py" >> .gitignore
-.idea
-.infertilityProjectMine
+echo "InfertilityProjectPlots.py" >> .gitignore
+
 __pycache__/
 *.pyc
 .DS_Store
