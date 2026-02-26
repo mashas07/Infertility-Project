@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
 from datasets import load_dataset
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
 
 sns.set_theme(style="whitegrid", palette="muted")
 
