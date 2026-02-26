@@ -17,6 +17,7 @@ def main():
     last_result = None
     model = None
     while True: 
+        input("\nPress Enter to continue...")
         os.system('clear')
         print(f"{'*' * 60}")
         print("MENU")
