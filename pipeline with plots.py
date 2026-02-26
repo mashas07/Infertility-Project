@@ -19,19 +19,8 @@ def main():
     """
     Main pipeline for predicting female's infertility 
     """
-    print("Female Infertility Predictor")
-
-    loader = DataLoader()
-    df = loader.load()
-    df = loader.clean()
-
-    target_column = "Infertility Prediction"
-    X, y = loader.split_features_target(target_column)
-    feature_names = X.columns.tolist()
-
-    model = None
-    scaler = None 
-    last_result = None
+    predictor = FertilityPredictor()
+    viz = Visualization(predictor)
     while True: 
         print("MENU")
         print("1 Train Model")
