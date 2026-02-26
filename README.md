@@ -6,9 +6,11 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Data Interpretation](#data-interpretation)
 - [Project Structure](#project-structure)
 - [Team Members](#team-members)
 - [Acknowledgments](#acknowledgments)
+- [Contact](#contact)
 
 ## Description
 This project builds and deploys a Random Forest model to predict female infertility based on patient clinical features. It provides an interactive command-line interface for making predictions, visualizing results, and comparing patient data against dataset averages. The tool is intended as a decision-support aid — not a medical diagnosis.
@@ -65,7 +67,7 @@ MENU
 ```
 ### Basic Workflow
 
-#### **1. Select 1 to train a new model (downloads data automatically).**
+### **1. Select 1 to train a new model (downloads data automatically).**
 ```
 Model training
 **************************************************
@@ -98,31 +100,33 @@ Confusion Matrix:
 - Train: (564, 11) — 564 patients used to train the model, each with 11 features. This is 80% of 705.
 - Test: (141, 11) — 141 patients used to evaluate the model, each with 11 features. This is 20% of 705.
 - Model: Random Forest
-- Accuracy: 93.62% — correctly classifies 132 out of 141 test patients
-  
-Class 0 (Fertile) — 25 patients in test set:
+- Accuracy: 93.62% — correctly classifies 132 out of 141 test patients\
+
+<ins>Class 0 (Fertile) — 25 patients in test set:<ins>
 
 - Precision 0.94 — nearly always right when predicting fertile
 - Recall 0.68 — misses 32% of fertile patients, predicting them as infertile
 - F1 (score is the balance between precision and recall) 0.79 — moderate, dragged down by low recall
 - support = 25 → there are 25 actually fertile patients in the test set
 
-Class 1 (Infertile) — 116 patients in test set:
+<ins>Class 1 (Infertile) — 116 patients in test set:<ins>
 
 - Precision 0.93 — nearly always right when predicting infertile
 - Recall 0.99 — catches 99% of infertile patients
 - F1 (score is the balance between precision and recall) 0.96 — excellent overall performance
 - support = 116 → there are 116 actually infertile patients in the test set
 
-Confusion Matrix:
+<ins>Confusion Matrix:<ins>
 
 - 17 correctly fertile, 8 fertile patients misclassified as infertile
 - 1 infertile patient missed, 115 correctly infertile
 
-- Macro avg — calculates the average of precision, recall, and F1 across both classes, treating them equally regardless of how many patients are in each class
-- Weighted avg — calculates the average weighted by how many patients are in each class (25 fertile, 116 infertile)
+
+**Macro avg** — calculates the average of precision, recall, and F1 across both classes, treating them equally regardless of how many patients are in each class
+
+**Weighted avg** — calculates the average weighted by how many patients are in each class (25 fertile, 116 infertile)
   
-#### **2. Select 3 to enter patient data and get a prediction (in question other that "age" input 1 for yes and 0 for no).**
+### **2. Select 3 to enter patient data and get a prediction (in question other that "age" input 1 for yes and 0 for no).**
 ```
 Processing patient data
 
@@ -149,7 +153,7 @@ Probability breakdown:
 - Class 0 (Fertile): 0.4% 
 - Class 1 (Infertile): 99.6% 
 
-#### **3. Select 4 to view visualizations of the prediction.**
+### **3. Select 4 to view visualizations of the prediction.**
 
 You will see three plots:
 - Prediction probability breakdown by class
@@ -160,7 +164,7 @@ You can see an example of a "patient vs. average" plot below:
 
 <img width="500" height="600" alt="Screenshot 2026-02-26 at 18 36 10" src="https://github.com/user-attachments/assets/54c3453d-8cf6-46e6-9f94-f6f34461e8bc" />
 
-#### **4. Select 5 to see the model summary**
+### **4. Select 5 to see the model summary**
 ```
 PatientPredictor
   Accuracy : 93.62%
