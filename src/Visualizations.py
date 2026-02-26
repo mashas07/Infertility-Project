@@ -140,7 +140,7 @@ class Visualization:
         }
 
         contrib_series = pd.Series(contributions).sort_values()
-        colors = ['#ffadbe' if v > 0 else '#5cb85c' for v in contrib_series]
+        colors = ['#ffadbe' if v > 0 else '#5bc0de' for v in contrib_series]
 
         fig, ax = plt.subplots(figsize=(9, max(4, len(contrib_series) * 0.6)))
         contrib_series.plot(kind='barh', ax=ax, color=colors, edgecolor='white')
@@ -151,7 +151,7 @@ class Visualization:
         ax.set_title('Which Factors Influenced Your Prediction Most', fontsize=14, fontweight='bold')
 
         increase = mpatches.Patch(color='#ffadbe', label='Increases predicted risk')
-        decrease = mpatches.Patch(color='#5cb85c', label='Decreases predicted risk')
+        decrease = mpatches.Patch(color='#5bc0de', label='Decreases predicted risk')
         ax.legend(handles=[increase, decrease])
 
         ax.text(0.5, -0.18,
