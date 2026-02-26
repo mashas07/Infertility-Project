@@ -1,22 +1,14 @@
-echo "__pycache__/" > .gitignore
-echo "*.pkl" >> .gitignore
-echo "*.pyc" >> .gitignore
-echo "1.py" >> .gitignore
-echo "outline.py" >> .gitignore
-echo "outline_1.py" >> .gitignore
-echo "r.py" >> .gitignore
-echo "teste.py" >> .gitignore
-echo "working_version.py" >> .gitignore
-echo "Fertility_model" >> .gitignore*.ipynb
-echo "Female Infertility Code.ipynb" >> .gitignore
-echo "Female infertility.csv" >> .gitignore
-echo "archive.zip" >> .gitignore
-echo "desktop.ini" >> .gitignore
-echo "first_python_file.py" >> .gitignore
-echo "main.py" >> .gitignore
-echo "plots.py" >> .gitignore
-.idea
-.infertilityProjectMine
 __pycache__/
 *.pyc
+*.pkl
+*.ipynb
+*.zip
+*.csv
 .DS_Store
+desktop.ini
+.idea/
+.venv/
+infertilityProjectMine/
+first_python_file.py
+plots.py
+InfertilityProjectPlots.py
