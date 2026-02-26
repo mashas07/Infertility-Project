@@ -18,7 +18,7 @@ def get_predictor():
 predictor = get_predictor()
 viz = Visualization(predictor)
 
-# ── Sidebar ──────────────────────────────────────────────
+#Sidebar
 st.sidebar.header("Model")
 
 if st.sidebar.button("Train Model"):
@@ -39,13 +39,13 @@ if predictor.is_trained:
 else:
     st.sidebar.warning("Model not trained yet.")
 
-# ── Patient Input ─────────────────────────────────────────
+#The input
 st.header("Patient Data")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    age = st.number_input("Age", min_value=0, max_value=120, value=30)
+    age = st.number_input("Age", min_value=12, max_value=60, value=30)
     ovulation_disorders = st.selectbox("Ovulation Disorders", [0, 1])
     blocked_fallopian = st.selectbox("Blocked Fallopian Tubes", [0, 1])
     endometriosis = st.selectbox("Endometriosis", [0, 1])
@@ -73,7 +73,7 @@ with col2:
         "Unexplained Infertility": unexplained
     }
 
-# ── Prediction ────────────────────────────────────────────
+#Prediction
 st.header("Prediction")
 
 if st.button("Predict", type="primary"):
@@ -92,7 +92,7 @@ if st.button("Predict", type="primary"):
             label = "Fertile" if cls == "0" else "Infertile"
             st.progress(int(prob), text=f"{label}: {prob:.1f}%")
 
-        # ── Plot 1: Prediction Probability ──
+        #Prediction probability
         st.subheader("Prediction Probability")
         fig1, ax1 = plt.subplots()
         probs = result["probabilities"]
@@ -104,7 +104,7 @@ if st.button("Predict", type="primary"):
         ax1.set_title("Prediction Probability")
         st.pyplot(fig1)
 
-        # ── Plot 2: Patient vs Average ──
+        #Patient vs Average
         st.subheader("Your Values vs Dataset Average")
         df = predictor.loader.dataframe
         features = predictor.original_features[:8]
@@ -129,7 +129,7 @@ if st.button("Predict", type="primary"):
         ax2.legend()
         st.pyplot(fig2)
 
-        # ── Plot 3: Feature Importance ──
+        #Feature importance
         st.subheader("Feature Importance")
         importance_df = predictor.feature_importance(top_n=11)
         fig3, ax3 = plt.subplots(figsize=(8, 5))
