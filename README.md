@@ -92,6 +92,10 @@ weighted avg       0.94      0.94      0.93       141
 Confusion Matrix:
 [[ 17   8]
  [  1 115]]
+**************************************************
+Saved model → fertility_model.pkl
+Saved components → fertility_components.pkl
+
 ```
 
 #### Data interpretation
