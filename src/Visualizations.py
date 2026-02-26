@@ -1,9 +1,3 @@
-"""
-Visualization.py
-Patient-facing plots built with matplotlib and seaborn.
-Composes FertilityModel (or subclass) to access model internals.
-"""
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,10 +10,7 @@ sns.set_theme(style="darkgrid", palette="muted")
 
 
 class Visualization:
-    """
-    Patient-facing plots.
-    Composes a FertilityModel (or subclass) to access model internals.
-    """
+    '''Generates the plots. Composes a FertilityModel (or subclass) to access model internals.'''
 
     def __init__(self, model: FertilityModel):
         self._model = model
@@ -31,7 +22,7 @@ class Visualization:
         return f"Visualization → bound to {self._model.__class__.__name__}"
 
     def plot_prediction_probability(self, result: dict):
-        """Bar chart of predicted class probabilities."""
+        '''Bar chart of predicted class probabilities'''
         probs = result.get('probabilities')
         if not probs:
             print("    No probability data available.")
@@ -40,7 +31,6 @@ class Visualization:
         classes = list(probs.keys())
         values = [probs[c] for c in classes]
         colors = ['#ffadbe' if c == str(result['prediction']) else '#5bc0de' for c in classes]
-
         fig, ax = plt.subplots(figsize=(8, max(3, len(classes) * 0.8)))
         bars = ax.barh(classes, values, color=colors, edgecolor='white', height=0.5)
 
@@ -64,7 +54,7 @@ class Visualization:
         plt.show()
 
     def plot_patient_vs_average(self, result: dict, top_n: int = 8):
-        """Grouped bar chart comparing patient values against dataset averages."""
+        '''Grouped bar chart comparing patient values vs dataset averages'''
         patient_data = result.get('patient_data')
         if not patient_data:
             print("    No patient data in result.")
@@ -109,7 +99,7 @@ class Visualization:
         plt.show()
 
     def plot_feature_contribution(self, result: dict, top_n: int = 8):
-        """Diverging bar chart showing which features drove the prediction."""
+        '''Bar chart showing which features influenced the prediction'''
         patient_data = result.get('patient_data')
         if not patient_data:
             print("    No patient data in result.")
@@ -156,7 +146,7 @@ class Visualization:
         plt.show()
 
     def plot_patient_report(self, result: dict):
-        """Show all 3 patient plots at once."""
+        '''Show all 3 patient plots'''
         self.plot_prediction_probability(result)
         self.plot_patient_vs_average(result)
         self.plot_feature_contribution(result)
