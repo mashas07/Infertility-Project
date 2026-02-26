@@ -42,14 +42,14 @@ def main():
                 print(f"Error loading model: {e}")
         
         elif choice == "3":
-    if not predictor.is_trained:
-        print("Train or load model first.")
-        continue
-    try:
-        predictor.interactive_prediction()
-        last_result = predictor.last_result
-    except Exception as e:
-        print(f"Error during prediction: {e}")
+            if not predictor.is_trained:
+                print("Train or load model first.")
+                continue
+            try:
+                predictor.interactive_prediction()
+                last_result = predictor.last_result
+            except Exception as e:
+                print(f"Error during prediction: {e}")
 
         elif choice == "4":
             if not predictor.is_trained:
