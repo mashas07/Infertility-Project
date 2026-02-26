@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
 
-from Fertility_model import FertilityModel
+from src.Fertility_model import FertilityModel
 
 sns.set_theme(style="whitegrid", palette="muted")
 
