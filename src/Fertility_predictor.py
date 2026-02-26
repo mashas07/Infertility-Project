@@ -75,25 +75,16 @@ class FertilityPredictor(FertilityModel):
 
     def interactive_prediction(self):
         print("Patient Data")
-        print(f"{"*" * 70}")
-        print("Please, input 1 (yes) or 0 (no) as the answer for questions (except for 'age')")
-
+        print("*" * 70)
+        print("Enter 1 (yes) or 0 (no) for each question, except for age")
         patient_data = {}
+        
         for feature in self._original_features:
-            while True:
-                raw = input(f"{feature}: ").strip()
-                if not raw:
-                    print(f"! '{feature}' is required.")
-                    continue
-                try:
-                    value = float(raw)
-                    if feature.lower() != 'age' and value not in (0, 1):
-                        print(f"! '{feature}' must be 0 or 1.")
-                        continue
-                    patient_data[feature] = value
-                    break
-                except ValueError:
-                    print(f"! Please enter a valid number.")
+            value = input(f"{feature}: ")
+            if feature.lower() != 'age':
+                if value not in ('0', '1'):
+                    print("Please enter 0 or 1")
+            patient_data[feature] = float(value)
 
         print(f"\nProcessing patient data")
         result = self.predict_patient(patient_data)
