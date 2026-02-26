@@ -12,7 +12,7 @@ import seaborn as sns
 
 from src.Fertility_model import FertilityModel
 
-sns.set_theme(style="whitegrid", palette="muted")
+sns.set_theme(style="darkgrid", palette="muted")
 
 
 class Visualization:
