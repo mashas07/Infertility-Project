@@ -1,5 +1,4 @@
 import pandas as pd
-import requests 
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -9,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-
+from src.Fertility_model import FertilityModel
 from src.Fertility_predictor import FertilityPredictor
 from src.Visualizations import Visualization
 
@@ -19,62 +18,62 @@ def main():
     """
     predictor = FertilityPredictor()
     viz = Visualization(predictor)
+    last_result = None
+    model = None
     while True: 
+        print(f"{'*' * 60}")
         print("MENU")
-        print("1 Train Model")
-        print("2 Load Model")
-        print("3 Predict Patient")
-        print("4 Show Patient Report")
-        print("5 Exit")
+        print(f"{'*' * 60}")
+        print("1. Train new model")
+        print("2. Load existing model")
+        print("3. Make prediction")
+        print("4. Show Patient Report")
+        print("5. Show model summary")
+        print("6. Exit")
 
         choice = input("Choice: ").strip()
         if choice == "1":
             print("Training model...")
-            X_train, X_test, y_train, y_test, scaler = loader.split_and_scale(X, y)
-
-            model = FertilityModel()
-            model.train(X_train, y_train)
-            print("Model trained.")
+            predictor.train()
 
         elif choice == "2":
-            model = FertilityModel()
-            model.load_model()
-            print("Model loaded.")
-
+            try:
+                predictor.load()
+            except Exception as e:
+                print(f"Error loading model: {e}")
+        
         elif choice == "3":
-            if model is None: 
+            if not predictor.is_trained:
                 print("Train or load model first.")
-                continue 
-
-            predictor = FertilityPredictor()
-            patient_data = {}
-            print("Enter patient data:")
-            for feature in feature_names:
-                if feature == target_column:
-                    continue
-                while True: 
-                    try: 
-                        patient_data[feature] = float(input(f"{feature}: "))
-                        break 
-                    except ValueError:
-                        print("Enter numeric value.")
-            
+                continue
+            try:
+                predictor.interactive_prediction()
+                last_result = predictor.last_result
+            except Exception as e:
+                print(f"Error during prediction: {e}")
+                
             result = predictor.predict_patient(patient_data)
             last_result = result
             print(result)
+
         elif choice == "4":
-            if model is None:
+            if not predictor.is_trained:
                 print("Train or load model first.")
                 continue
             if last_result is None:
                 print("Make a prediction first.")
                 continue
-            viz = Visualization(model)
             viz.plot_patient_report(last_result)
-        elif choice == "5":
-            print("Exiting system")
-            break 
+
+        elif choice == '5':
+            print(str(predictor))
+            
+        elif choice == "6":
+            print("Exiting system.")
+            break
+
         else:
             print("Invalid choice. Try again.")
+            
 if __name__ == "__main__":
     main()
