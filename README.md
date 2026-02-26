@@ -7,7 +7,6 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- [Model Performance](#model-performance)
 - [Team Members](#team-members)
 - [Acknowledgments](#acknowledgments)
 
@@ -53,20 +52,121 @@ python main.py
 ```
 You will see a menu:
 ```
+************************************************************
 MENU
-  1 Train Model
-  2 Load Model
-  3 Predict Patient
-  4 Show patient report 
-  5 Exit
+************************************************************
+1. Train new model
+2. Load existing model
+3. Make prediction
+4. Show Patient Report
+5. Show model summary
+6. Exit
+
 ```
 ### Basic Workflow
 
-Select 1 to train a new model (downloads data automatically).
+#### **1. Select 1 to train a new model (downloads data automatically).**
+```
+Model training
+**************************************************
+Loaded: 705 rows × 13 columns
+Features : 11
+Samples  : 705
+Train: (564, 11)  |  Test: (141, 11)
+Training Random Forest…
+MODEL EVALUATION
+**************************************************
+Accuracy: 93.62%
 
-Select 3 to enter patient data and get a prediction (in question other that "age" input 1 for yes and 0 for no).
+              precision    recall  f1-score   support
 
-Select 4 to view visualizations of the prediction.
+           0       0.94      0.68      0.79        25
+           1       0.93      0.99      0.96       116
+
+    accuracy                           0.94       141
+   macro avg       0.94      0.84      0.88       141
+weighted avg       0.94      0.94      0.93       141
+
+Confusion Matrix:
+[[ 17   8]
+ [  1 115]]
+```
+
+#### Data interpretation
+- Features: 11 — the number of clinical variables (columns) used as input to the model, after dropping Patient ID and the target column.
+- Samples: 705 — total number of patients in the dataset.
+- Train: (564, 11) — 564 patients used to train the model, each with 11 features. This is 80% of 705.
+- Test: (141, 11) — 141 patients used to evaluate the model, each with 11 features. This is 20% of 705.
+- Model: Random Forest
+- Accuracy: 93.62% — correctly classifies 132 out of 141 test patients
+  
+Class 0 (Fertile) — 25 patients in test set:
+
+- Precision 0.94 — nearly always right when predicting fertile
+- Recall 0.68 — misses 32% of fertile patients, predicting them as infertile
+- F1 (score is the balance between precision and recall) 0.79 — moderate, dragged down by low recall
+- support = 25 → there are 25 actually fertile patients in the test set
+
+Class 1 (Infertile) — 116 patients in test set:
+
+- Precision 0.93 — nearly always right when predicting infertile
+- Recall 0.99 — catches 99% of infertile patients
+- F1 (score is the balance between precision and recall) 0.96 — excellent overall performance
+- support = 116 → there are 116 actually infertile patients in the test set
+
+Confusion Matrix:
+
+- 17 correctly fertile, 8 fertile patients misclassified as infertile
+- 1 infertile patient missed, 115 correctly infertile
+
+- Macro avg — calculates the average of precision, recall, and F1 across both classes, treating them equally regardless of how many patients are in each class
+- Weighted avg — calculates the average weighted by how many patients are in each class (25 fertile, 116 infertile)
+  
+#### **2. Select 3 to enter patient data and get a prediction (in question other that "age" input 1 for yes and 0 for no).**
+```
+Processing patient data
+
+**************************************************
+PREDICTION RESULTS
+**************************************************
+Prediction : 1
+Confidence : 99.57%
+
+  Probability breakdown:
+    0                     0.4%
+    1                    ================================================= 99.6%
+
+**************************************************
+!!  This is a prediction, not a medical diagnosis  !!
+Please consult a qualified healthcare professional.
+**************************************************
+
+```
+- Prediction: 1 — the model predicts this patient is infertile (1 = infertile, 0 = fertile).
+- Confidence: 99.57% — the model is extremely confident in this prediction.
+Probability breakdown:
+
+- Class 0 (Fertile): 0.4% 
+- Class 1 (Infertile): 99.6% 
+
+#### **3. Select 4 to view visualizations of the prediction.**
+
+You will see three plots:
+- Prediction probability breakdown by class
+- Patient values vs dataset average comparison
+- Feature contribution chart showing which factors influenced the prediction
+
+You can see an example of a "patient vs. average" plot below:
+
+<img width="500" height="600" alt="Screenshot 2026-02-26 at 18 36 10" src="https://github.com/user-attachments/assets/54c3453d-8cf6-46e6-9f94-f6f34461e8bc" />
+
+#### **4. Select 5 to see the model summary**
+```
+PatientPredictor
+  Accuracy : 93.62%
+  Features : 11
+  Last prediction : 1 (99.6%)
+```
 
 ## Project Structure
 ```
