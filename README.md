@@ -231,6 +231,8 @@ Dataset: [Female Infertility](https://www.kaggle.com/datasets/fida5073/female-in
 
 Special thanks to our mentor Ruth Großeholz.
 
+Claude.ai was used to clean and make code more readable and concise.
+
 ## Contact
 To report bugs and provide feedback contact the lead developer via m.sobko@student.maastrichtuniversity.nl
 
