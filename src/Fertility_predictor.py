@@ -3,8 +3,7 @@ import pandas as pd
 from src.Fertility_model import FertilityModel
 
 class FertilityPredictor(FertilityModel):
-    '''Extends FertilityModel via inheritance.
-    Adds patient input validation and patient prediction.'''
+    # extends FertilityModel. Adds patient input validation and patient prediction
 
     def __init__(self):
         super().__init__()
@@ -13,7 +12,7 @@ class FertilityPredictor(FertilityModel):
     @property
     def last_result(self):
         return self._last_result
-
+    # provides the summary of model performance
     def __str__(self):
         if not self._is_trained:
             return "Predictor is not trained yet"
@@ -40,12 +39,11 @@ class FertilityPredictor(FertilityModel):
                 print(f"    {cls:20s} {bar} {prob:.1f}%")
         print(f"\n{'*' * 70}")
         print("!!  This is a prediction, not a medical diagnosis  !!")
-        print("     Please consult a qualified healthcare professional.")
+        print("Please consult a qualified healthcare professional.")
         print(f"{'*' * 70}\n")
 
     def predict_patient(self, patient_data: dict) -> dict:
-        '''Make a prediction given patient data'''
-        #Check that the model is trained
+        # make a prediction using patient's data
         if not self._is_trained:
             raise  RuntimeError("Predictor is not trained yet")
         #Check that all features are present
@@ -81,7 +79,7 @@ class FertilityPredictor(FertilityModel):
         
         for feature in self._original_features:
             value = input(f"{feature}: ")
-            if feature.lower() != 'age':
+            if feature != 'Age':
                 if value not in ('0', '1'):
                     print("Please enter 0 or 1")
             patient_data[feature] = float(value)
