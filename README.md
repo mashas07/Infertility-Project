@@ -13,7 +13,9 @@
 - [Contact](#contact)
 
 ## Description
-In this project we used Random Forest model to predict female infertility based on patient clinical data. It provides an interactive command-line interface for making predictions, visualizing results, and comparing patient data against dataset averages. The tool is intended as a decision-support aid, not a medical diagnosis.
+In this project we used Random Forest model to predict female infertility based on patient clinical data. It provides both GUI and an interactive command-line interface for making predictions, visualizing results, and comparing patient data against dataset averages. GUI is created for users, while command-line interface provides detailed information about the model. 
+
+The tool is intended as a decision-support aid, not a medical diagnosis.
 
 Built as a course project.
 
@@ -48,6 +50,29 @@ cd Infertility-Project
 pip install -r requirements.txt
 ```
 ## Usage
+### Running GUI
+#### 1. Run the application:
+```
+streamlit run app.py
+```
+
+- A GUI will pop up
+<img width="1628" height="890" alt="Screenshot 2026-02-27 at 14 32 03" src="https://github.com/user-attachments/assets/eee87800-8a14-4bb6-b1e6-cf7ca4e127ed" />
+
+#### 2. Press "Train Model" to train the model or "Load Model" to load an existing model 
+
+- After the training you will see a message providing information about model's accuracy
+
+<img width="279" height="300" alt="Screenshot 2026-02-27 at 14 35 04" src="https://github.com/user-attachments/assets/f1dedc03-6ddb-455e-bb8a-6f70778940bd" />
+
+#### 3. Fill in the form according to the instructions described in the caprion, then press "Predict" to make a prediction and see the probability breakdown
+<img width="735" height="251" alt="Screenshot 2026-02-27 at 14 39 38" src="https://github.com/user-attachments/assets/2e2b6d8a-d5ae-407a-a674-50d0335200d6" />
+
+#### 4. You can find the plots
+<img width="760" height="453" alt="Screenshot 2026-02-27 at 14 41 39" src="https://github.com/user-attachments/assets/096a7818-6c23-48cc-b450-63bf1c1a9d9a" />
+
+
+### Running an interactive command-line interface
 Run the application:
 ```
 python main_file.py
