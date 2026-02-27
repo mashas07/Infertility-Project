@@ -10,13 +10,13 @@ from src.DataLoad import DataLoader
 class FertilityModel:
     def __init__(self):
         self._loader = DataLoader()
-        self._model = None
+        self._model: RandomForestClassifier | None = None
         self._scaler = StandardScaler()
-        self._feature_names = []
-        self._original_features = []
+        self._feature_names: list[str] = []
+        self._original_features: list[str] = []
         self._target_classes = None
-        self._accuracy = None
-        self._is_trained = False
+        self._accuracy: float | None = None
+        self._is_trained: bool = False
 
     @property
     def is_trained(self) -> bool:
