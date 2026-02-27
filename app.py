@@ -18,7 +18,7 @@ def get_predictor():
 predictor = get_predictor()
 viz = Visualization(predictor)
 
-#Sidebar
+#generating a sidebar
 st.sidebar.header("Model")
 
 if st.sidebar.button("Train Model"):
@@ -39,9 +39,9 @@ if predictor.is_trained:
 else:
     st.sidebar.warning("Model not trained yet.")
 
-#The input
+# take an input
 st.header("Patient Data")
-st.caption("Enter 1 (yes) or 0 (no) for each question, except for age"
+st.caption("Enter 1 (yes) or 0 (no) for each question, except for age")
 
 col1, col2 = st.columns(2)
 
@@ -74,7 +74,7 @@ with col2:
         "Unexplained Infertility": unexplained
     }
 
-#Prediction
+# make a prediction
 st.header("Prediction")
 
 if st.button("Predict", type="primary"):
@@ -93,7 +93,7 @@ if st.button("Predict", type="primary"):
             label = "Fertile" if cls == "0" else "Infertile"
             st.progress(int(prob), text=f"{label}: {prob:.1f}%")
 
-        #Prediction probability
+        # prediction probability
         st.subheader("Prediction Probability")
         fig1, ax1 = plt.subplots()
         probs = result["probabilities"]
@@ -105,7 +105,7 @@ if st.button("Predict", type="primary"):
         ax1.set_title("Prediction Probability")
         st.pyplot(fig1)
 
-        #Patient vs Average
+        #patient vs average
         st.subheader("Your Values vs Dataset Average")
         df = predictor.loader.dataframe
         features = predictor.original_features[:8]
@@ -130,7 +130,7 @@ if st.button("Predict", type="primary"):
         ax2.legend()
         st.pyplot(fig2)
 
-        #Feature importance
+        # feature importance
         st.subheader("Feature Importance")
         importance_df = predictor.feature_importance(top_n=11)
         fig3, ax3 = plt.subplots(figsize=(8, 5))
