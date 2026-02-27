@@ -41,6 +41,7 @@ else:
 
 #The input
 st.header("Patient Data")
+st.caption("Enter 1 (yes) or 0 (no) for each question, except for age"
 
 col1, col2 = st.columns(2)
 
