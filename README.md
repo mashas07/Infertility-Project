@@ -13,7 +13,7 @@
 - [Contact](#contact)
 
 ## Description
-In this roject we used Random Forest model to predict female infertility based on patient clinical data. It provides an interactive command-line interface for making predictions, visualizing results, and comparing patient data against dataset averages. The tool is intended as a decision-support aid, not a medical diagnosis.
+In this project we used Random Forest model to predict female infertility based on patient clinical data. It provides an interactive command-line interface for making predictions, visualizing results, and comparing patient data against dataset averages. The tool is intended as a decision-support aid, not a medical diagnosis.
 
 Built as a course project.
 
