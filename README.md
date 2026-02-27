@@ -33,7 +33,7 @@ Built as a course project.
 ## Installation
 ### Prerequisites
 - Python 3.13 or higher
-- All dependencies listed in [`requirements.txt`](requirements.txt)
+- All dependencies listed in requirements.txt
 
 1. Clone the repository:
 
