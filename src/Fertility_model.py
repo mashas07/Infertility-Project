@@ -8,16 +8,15 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from src.DataLoad import DataLoader
 
 class FertilityModel:
-    '''Creates and trains a model'''
     def __init__(self):
         self._loader = DataLoader()
-        self._model: RandomForestClassifier | None = None
+        self._model = None
         self._scaler = StandardScaler()
-        self._feature_names: list[str] = []
-        self._original_features: list[str] = []
+        self._feature_names = []
+        self._original_features = []
         self._target_classes = None
-        self._accuracy: float | None = None
-        self._is_trained: bool = False
+        self._accuracy = None
+        self._is_trained = False
 
     @property
     def is_trained(self) -> bool:
@@ -42,10 +41,7 @@ class FertilityModel:
     def loader(self) -> DataLoader:
         return self._loader
 
-    def __repr__(self):
-        status = f"trained, accuracy={self._accuracy:.4f}" if self._is_trained else "untrained"
-        return f"FertilityModel({status}, features={len(self._original_features)})"
-
+    # define string representation of the model
     def __str__(self):
         if not self._is_trained:
             return "FertilityModel [untrained]"
@@ -58,8 +54,8 @@ class FertilityModel:
         )
 
     def train(self, target_column: str = 'Infertility Prediction'):
-        '''Load and clean the data.
-            Train and evaluate the model.'''
+        # Load and clean the data.
+        # Train and evaluate the model.
         print("Model training")
         print(f"{"*" * 50}")
 
@@ -72,28 +68,27 @@ class FertilityModel:
         print(f"Features : {len(self._original_features)}")
         print(f"Samples  : {len(X)}")
 
-        # All values in this dataset are numeric, so encoding isn't needed
+        # Extract matrix of values from the dataframe
         X_values = X.values
         y_values = y.values
 
-        # Train/test split
+        # Use stratified train-test split in case data in y is unbalanced
         X_train, X_test, y_train, y_test = train_test_split(
             X_values, y_values, test_size=0.2, random_state=42, stratify=y_values
         )
         print(f"Train: {X_train.shape}  |  Test: {X_test.shape}")
 
-        # Scale
+        # Apply standartization to the data
         X_train_s = self._scaler.fit_transform(X_train)
         X_test_s = self._scaler.transform(X_test)
 
-        print("Training Random Forest…")
         self._model = RandomForestClassifier(
-            n_estimators=100, random_state=42, max_depth=10, min_samples_split=5
+            n_estimators=100, random_state=42, max_depth=10
         )
         self._model.fit(X_train_s, y_train)
         self._is_trained = True
 
-        # Evaluate
+        # Evaluation
         y_pred = self._model.predict(X_test_s)
         self._accuracy = accuracy_score(y_test, y_pred)
 
@@ -103,19 +98,21 @@ class FertilityModel:
         print("MODEL EVALUATION")
         print(f"{'*' * 50}")
         print(f"Accuracy: {self._accuracy * 100:.2f}%\n")
-        print(classification_report(y_test, y_pred))
+        print(classification_report(y_test, y_pred)) # calculates and prints different metrics for model evaluation(accuracy, precision etc)
         print("Confusion Matrix:")
-        print(confusion_matrix(y_test, y_pred))
+        print(confusion_matrix(y_test, y_pred)) # matrix with amounts of true negatives, false negatives, false positives, true positives
         print(f"{'*' * 50}")
 
         return self._accuracy
 
+    # method for predicting user input
     def predict_encoded(self, user_df: pd.DataFrame):
         X_scaled = self._scaler.transform(user_df[self._original_features].values)
         prediction = self._model.predict(X_scaled)[0]
         probabilities = self._model.predict_proba(X_scaled)[0]
         return prediction, probabilities
 
+    # calculate prediction confidence and probabilities for all classes(in our case for 0 or 1)
     def decode_prediction(self, prediction, probabilities):
         predicted_class = prediction
         confidence = float(max(probabilities)) * 100
@@ -124,6 +121,7 @@ class FertilityModel:
 
         return predicted_class, confidence, prob_dict
 
+    # returns how important was each feature for our prediction
     def feature_importance(self, top_n: int = 10) -> pd.DataFrame:
         if not self._is_trained:
             raise RuntimeError("Model must be trained before making predictions")
@@ -134,9 +132,9 @@ class FertilityModel:
         }).sort_values(by="importance", ascending=False).head(top_n).reset_index(drop=True)
         )
 
+    # saves model to the disk
     def save(self, model_path: str = 'fertility_model.pkl',
              components_path: str = 'fertility_components.pkl'):
-        '''Persist model and components to disk.'''
         if not self._is_trained:
             raise RuntimeError("Train the model before saving.")
         with open(model_path, 'wb') as f:
@@ -150,12 +148,12 @@ class FertilityModel:
         }
         with open(components_path, 'wb') as f:
             pickle.dump(components, f)
-        print(f"Saved model → {model_path}")
-        print(f"Saved components → {components_path}")
+        print(f"Saved model -> {model_path}")
+        print(f"Saved components -> {components_path}")
 
+    # load model from the disk
     def load(self, model_path: str = 'fertility_model.pkl',
              components_path: str = 'fertility_components.pkl'):
-        '''Restore model and components from disk.'''
         with open(model_path, 'rb') as f:
             self._model = pickle.load(f)
         with open(components_path, 'rb') as f:
@@ -168,7 +166,7 @@ class FertilityModel:
         self._is_trained = True
         self._loader.load()
         self._loader.clean()
-        print(f"Loaded model ← {model_path}")
-        print(f"Loaded components ← {components_path}")
+        print(f"Loaded model <- {model_path}")
+        print(f"Loaded components <- {components_path}")
         print(f"Features: {len(self._original_features)}")
 
