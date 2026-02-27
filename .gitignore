@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pkl
+*.ipynb
+*.zip
+*.csv
+.DS_Store
+desktop.ini
+.idea/
+.venv/
+infertilityProjectMine/
+first_python_file.py
+plots.py
+InfertilityProjectPlots.py
