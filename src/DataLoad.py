@@ -4,7 +4,7 @@ import os
 import kagglehub
 
 class DataLoader:
-    '''Loading, validating, cleaning the data.'''
+    # used for loading, validating and cleaning the data
 
     def __init__(self):
         self._df: pd.DataFrame | None = None
@@ -29,7 +29,7 @@ class DataLoader:
 
     
     def load(self):
-        '''Load the file and strip column whitespace.'''
+        # load the file and strip column whitespace
         path = kagglehub.dataset_download("fida5073/female-infertility")
         csv_file = [f for f in os.listdir(path) if f.endswith('.csv')][0]
         self._df = pd.read_csv(os.path.join(path, csv_file))
@@ -38,7 +38,7 @@ class DataLoader:
         return self._df
 
     def clean(self):
-        '''Drop a column with patient ID and columns with many missing values.'''
+        # drop a column with patient ID and columns with many missing values
         df = self.dataframe
         self._df.drop(columns=['Patient ID'], inplace=True, errors='ignore')
 
@@ -55,7 +55,7 @@ class DataLoader:
         return self._df
 
     def split_features_target(self, target_column: str):
-        '''Return (X, y) split from the loaded dataframe.'''
+        # return (X, y) split from the loaded dataframe
         df = self.dataframe
         if target_column not in df.columns:
             raise ValueError(f"Column '{target_column}' not found. Columns in the dataset: {list(df.columns)}")
