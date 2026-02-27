@@ -11,6 +11,21 @@ st.set_page_config(page_title="Female Infertility Prediction", page_icon="🏥",
 st.title("🏥 Female Infertility Prediction System")
 st.caption("This is a prediction tool, not a medical diagnosis. Please consult a qualified healthcare professional.")
 
+preset_colors: list[tuple[str, ThemeColor]] = [
+    ("Default light", ThemeColor(
+            primaryColor="#FFABAB",
+            backgroundColor="#ffffff",
+            secondaryBackgroundColor="#f0f2f6",
+            textColor="#31333F",
+        )),
+    ("Default dark", ThemeColor(
+            primaryColor="#FFABAB",
+            backgroundColor="#0e1117",
+            secondaryBackgroundColor="#262730",
+            textColor="#fafafa",
+    ))
+]
+
 @st.cache_resource
 def get_predictor():
     return FertilityPredictor()
