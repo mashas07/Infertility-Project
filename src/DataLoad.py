@@ -11,12 +11,14 @@ class DataLoader:
 
     @property
     def dataframe(self):
+        ''' raises RuntimeError if load() hasn't been called'''
         if self._df is None:
             raise RuntimeError("Data not loaded yet. Call load() first.")
         return self._df
 
     @property
     def shape(self):
+        ''' Returns rows x columns shape of the DataFrame'''
         return self.dataframe.shape
 
     def __repr__(self):
@@ -29,7 +31,11 @@ class DataLoader:
 
     
     def load(self):
-        # load the file and strip column whitespace
+        ''' loads the file from Kaggle and strips whitespace from the column names.
+        Returns:
+            pd.DataFrame: the loaded DataFrame
+        '''
+        
         path = kagglehub.dataset_download("fida5073/female-infertility")
         csv_file = [f for f in os.listdir(path) if f.endswith('.csv')][0]
         self._df = pd.read_csv(os.path.join(path, csv_file))
@@ -38,7 +44,10 @@ class DataLoader:
         return self._df
 
     def clean(self):
-        # drop a column with patient ID and columns with many missing values
+        ''' drops a column with patient ID and columns with many missing values.
+        Returns:
+            pd.DataFrame: the cleaned DataFrame
+        '''
         df = self.dataframe
         self._df.drop(columns=['Patient ID'], inplace=True, errors='ignore')
 
@@ -55,7 +64,15 @@ class DataLoader:
         return self._df
 
     def split_features_target(self, target_column: str):
-        # return (X, y) split from the loaded dataframe
+        ''' splits the DataFrame into feature matrix (X) and target vector (Y).
+        Args:
+        target_column (str): name of the column to use as a target variable
+
+        Returns:
+            tuple[pd.DataFrame, pd.Series]: A tuple (X, y) where X is all
+            columns except the target and y contains the target column values
+        '''
+        
         df = self.dataframe
         if target_column not in df.columns:
             raise ValueError(f"Column '{target_column}' not found. Columns in the dataset: {list(df.columns)}")
