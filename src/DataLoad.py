@@ -4,14 +4,14 @@ import os
 import kagglehub
 
 class DataLoader:
-    # used for loading, validating and cleaning the data
+    '''Loads, validates and cleans the dataset'''
 
     def __init__(self):
         self._df: pd.DataFrame | None = None
 
     @property
     def dataframe(self):
-        ''' raises RuntimeError if load() hasn't been called'''
+        ''' Raises RuntimeError if load() hasn't been called'''
         if self._df is None:
             raise RuntimeError("Data not loaded yet. Call load() first.")
         return self._df
@@ -31,7 +31,7 @@ class DataLoader:
 
     
     def load(self):
-        ''' loads the file from Kaggle and strips whitespace from the column names.
+        ''' Loads the file from Kaggle and strips whitespace from the column names.
         Returns:
             pd.DataFrame: the loaded DataFrame
         '''
@@ -64,7 +64,7 @@ class DataLoader:
         return self._df
 
     def split_features_target(self, target_column: str):
-        ''' splits the DataFrame into feature matrix (X) and target vector (Y).
+        ''' Splits the DataFrame into feature matrix (X) and target vector (Y).
         Args:
         target_column (str): name of the column to use as a target variable
 
