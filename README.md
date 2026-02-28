@@ -224,7 +224,8 @@ Infertility-Project/
 │   ├── Fertility_model.py    # Random Forest model
 │   ├── Fertility_predictor.py # Patient prediction interface
 │   └── Visualizations.py     # Patient-facing plots
-├── main.py                   # Entry point / CLI menu
+├── main.py                  # Entry point / CLI menu
+├── app.py                  # GUI
 ├── requirements.txt          # Dependencies
 ├── .gitignore
 └── README.md
