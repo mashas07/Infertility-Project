@@ -7,11 +7,11 @@ class FertilityPredictor(FertilityModel):
     ''' Extends FertilityModel class with input validation and patient prediction '''
     def __init__(self):
        '''  Initializes the FertilityPredictor and calls the parent FertilityModel initializer and sets up a container to store the last prediction result.
-         Returns:
+       Returns:
             None
        '''
-        super().__init__()
-        self._last_result: dict | None = None
+       super().__init__()
+       self._last_result: dict | None = None
 
     @property
     def last_result(self):
@@ -81,7 +81,7 @@ class FertilityPredictor(FertilityModel):
         '''
         # make a prediction using patient's data
         if not self._is_trained:
-            raise  RuntimeError("Predictor is not trained yet")
+            raise RuntimeError("Predictor is not trained yet")
         #Check that all features are present
         if set(self._original_features) != set(patient_data.keys()):
             raise ValueError(f"Missing features: {set(self._original_features) - set(patient_data.keys())}")
@@ -119,10 +119,18 @@ class FertilityPredictor(FertilityModel):
         
         for feature in self._original_features:
             value = input(f"{feature}: ")
-            if feature != 'Age':
-                if value not in ('0', '1'):
+            if feature == 'Age':
+                try:
+                    patient_data[feature] = float(value)
+                    break
+                except ValueError:
+                    print("Please enter a valid number for age")
+            else:
+                if value in ('0', '1'):
+                    patient_data[feature] = float(value)
+                    break
+                else:
                     print("Please enter 0 or 1")
-            patient_data[feature] = float(value)
 
         print(f"\nProcessing patient data")
         result = self.predict_patient(patient_data)
