@@ -44,7 +44,7 @@ class DataLoader:
         return self._df
 
     def clean(self):
-        ''' drops a column with patient ID and columns with many missing values.
+        ''' Drops a column with patient ID and deals with missing values.
         Returns:
             pd.DataFrame: the cleaned DataFrame
         '''
