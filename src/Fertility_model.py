@@ -109,7 +109,12 @@ class FertilityModel:
         X_test_s = self._scaler.transform(X_test)
 
         self._model = RandomForestClassifier(
-            n_estimators=100, random_state=42, max_depth=10
+            n_estimators=100,     # builds 100 decision trees
+            random_state=42,     # fixed seed for reproducibility
+            max_depth=6,         # shallower trees overfit less
+            min_samples_leaf=5,   # to avoid memorization, requires at least 5 samples to land in each leaf
+            min_samples_split=10,  # there must be at least 10 samples before branching 
+            max_features='sqrt'   # already the default, but good to be explicit
         )
         self._model.fit(X_train_s, y_train)
         self._is_trained = True
