@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-import os
-import kagglehub
+import io
+import urllib.request
 
 class DataLoader:
     '''Loads, validates and cleans the dataset'''
@@ -35,10 +35,10 @@ class DataLoader:
         Returns:
             pd.DataFrame: the loaded DataFrame
         '''
-        
-        path = kagglehub.dataset_download("fida5073/female-infertility")
-        csv_file = [f for f in os.listdir(path) if f.endswith('.csv')][0]
-        self._df = pd.read_csv(os.path.join(path, csv_file))
+
+        url = "https://github.com/mashas07/Infertility-Project/blob/main/Female infertility.csv"
+        with urllib.request.urlopen(url) as response:
+            self._df = pd.read_csv(io.BytesIO(response.read()))
         self._df.columns = self._df.columns.str.strip()
         print(f"Loaded: {self._df.shape[0]} rows × {self._df.shape[1]} columns")
         return self._df
