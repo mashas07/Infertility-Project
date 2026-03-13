@@ -17,13 +17,13 @@ In this project we used Random Forest model to predict female infertility based 
 
 The tool is intended as a decision-support aid, not a medical diagnosis.
 
-Built as a course project.
+Built as a course project. Detailed docstrings and comments are provided to make code more understandable.
 
 ### Features
 
 - **Data Loading & Cleaning**: Automatically downloads the dataset from Kaggle, handles missing values and drops irrelevant columns
 - **Model Training**: Trains a Random Forest classifier with 80/20 train/test split and standard scaling
-- **Interactive Prediction**: Step-by-step CLI to enter patient data and receive an infertility prediction with confidence score
+- **Interactive Prediction**: Uses patient data and to get an infertility prediction with confidence score
 - **Visualizations**:
   - Prediction probability breakdown by class
   - Patient values vs dataset average comparison
